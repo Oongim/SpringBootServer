@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2" //AsciiDoc 파일을 컨버팅하고 Build 폴더에 복사하기 위한 플러그인입니다. gradle 7 버전 이후로는 이거 사용해야 함
 	id 'java'
 }
 
@@ -12,14 +13,79 @@ repositories {
 	mavenCentral()
 }
 
+//ext는 전역변수를 설정해주는 것이다. gradle은 build/generated-snippets에 스니펫이 생성되므로, 스니펫 생성 디렉토리를 변수에 담아준다.
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+
+//bootJar 설정. 스니펫을 이용해 문서 작성 후, build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해준다.
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'BOOT-INF/classes/static/docs'
+    }
+}
+
+configurations {
+	asciidoctorExtensions
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.24'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'mysql:mysql-connector-java'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testImplementation 'io.rest-assured:rest-assured'
+	testImplementation('org.junit.vintage:junit-vintage-engine') {
+		exclude group: 'org.hamcrest', module: 'hamcrest-core'
+	}
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	//테스트 코드를 mockMvc를 통해 작성해서 mockmvc의존성을 넣어줬다. restassured를 사용하려면 restassured 의존성을 넣어주면된다.
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+//asciidoctor 설정. 기존에 존재하는 docs를 삭제해준다.
+asciidoctor {
+	configurations "asciidoctorExtensions"
+    inputs.dir snippetsDir
+	dependsOn test
 }
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+//build/docs/asciidoc 파일을 src/main/resources/static/docs로 복사해준다.
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+test {
+    useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+build {
+    dependsOn copyDocument
+}
+
+//compileJava -> test -> asciidoctor -> bootJar 순으로 실행된다.
+
+
+//https://xlffm3.github.io/spring%20&%20spring%20boot/rest-docs/

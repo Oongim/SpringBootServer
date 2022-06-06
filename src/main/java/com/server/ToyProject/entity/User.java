@@ -1,42 +1,51 @@
 package com.server.ToyProject.entity;
 
+import java.util.Date;
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity // This tells Hibernate to make a table out of this class
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Entity // This tells Hibernate to make a table out of this class
+public class User extends BaseEntity{
+    @Id
+    private String uuid;
+
+    @Setter
     private String name;
 
     private String email;
 
-    public Integer getId() {
-        return id;
+    @Setter
+    private Date lastLoginAt;
+
+    public User(){
+        this.uuid = UUID.randomUUID().toString();
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public User(String uuid, String email){
+        this.uuid = uuid;
         this.email = email;
+    }
+
+    public User(String uuid, String name, String email){
+        this.uuid = uuid;
+        this.name = name;
+        this.email = email;
+    }
+
+    public static User sample(){
+        return new User("Park","park@gmail.com");
+    }
+
+    public static void main(String[] args){
+        User user = new User("Kim","kim@gmail.com");
+        System.out.println(user);
     }
 
 }
