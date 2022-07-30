@@ -1,9 +1,28 @@
+spring:
+
+    datasource:
+        url: jdbc:mysql://toyprojectrdb.cthvwllc47di.ap-northeast-2.rds.amazonaws.com:3306/dev?autoReconnect=true
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: admin
+        password: N4UId2CiV426odXgdl4t
+
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+jwt:
+    header: Authorization
+    secret: hjkdfhlASDJKFDkljsdfhskldfjhASDKLJSDFGHklasdjFhFKLDJADHFAKLJADKLJFhdKLFjDHFklsdjFskdjlFFKLJDs
+    token-validity-in-seconds: 86400
+
 # DataSource
-spring.jpa.hibernate.ddl-auto=update
-spring.datasource.url=jdbc:mysql://toyprojectrdb.cthvwllc47di.ap-northeast-2.rds.amazonaws.com:3306/dev?autoReconnect=true
-spring.datasource.username=admin
-spring.datasource.password=N4UId2CiV426odXgdl4t
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#spring.jpa.hibernate.ddl-auto=update
+#spring.datasource.url=
+#spring.datasource.username=admin
+#spring.datasource.password=N4UId2CiV426odXgdl4t
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+#spring.jwt
 
 
 #spring.jpa.hibernate.ddl-auto=update
