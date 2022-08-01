@@ -1,6 +1,8 @@
 package com.server.ToyProject.controller;
 
 
+import java.io.Console;
+
 import javax.validation.Valid;
 
 import org.apache.catalina.connector.Response;
@@ -16,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.ToyProject.dto.Token.TokenDto;
+import com.server.ToyProject.dto.Authority.TokenDto;
 import com.server.ToyProject.dto.User.LoginUserDto;
 import com.server.ToyProject.jwt.JwtFilter;
 import com.server.ToyProject.jwt.TokenProvider;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(path = "/api")
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;

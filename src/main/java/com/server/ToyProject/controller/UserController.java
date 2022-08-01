@@ -6,6 +6,8 @@ import com.server.ToyProject.repository.UserRepository;
 import com.server.ToyProject.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,16 +31,21 @@ public class UserController {
     }
 
     @PostMapping(path = "/google/login")
-    public @ResponseBody String LoginUser(@RequestBody LoginUserDto dto) {
-    
-        userService.loginUser(dto);
-
-        return "ok";
+    public @ResponseBody LoginUserDto LoginUser(@RequestBody LoginUserDto dto) {
+   
+        return userService.loginUser(dto);
     }
 
-    @GetMapping()
+    @GetMapping("/all")
     public @ResponseBody Iterable<User> getAllUsers() {
+        System.out.println("pass");
         return userService.findAll();
     }
 
+    @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public @ResponseBody User getMyUserInfo() {
+        System.out.println("pass getMyUserInfo");
+        return userService.getMyUserWithAuthorities();
+    }
 }

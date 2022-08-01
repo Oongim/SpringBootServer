@@ -1,7 +1,6 @@
 package com.server.ToyProject.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -12,35 +11,36 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.server.ToyProject.converter.StringListConverter;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
-public class Stage extends BaseEntity{
+@AllArgsConstructor
+public class Game extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Setter
+    @Column(updatable = true)
+    private LocalDateTime finishedAt;
+
     @ManyToOne
     private User user;
 
-    private Integer currentWave;
-
-    @Column(columnDefinition = "json")
-    @JsonRawValue
-    private String cards;
+    private Integer stage;
 
     @Convert(converter = StringListConverter.class)
     @Column(columnDefinition = "json")
-    private String cardArrangement;
+    private String killed;
 
-    public Stage(User user){
-        this.user = user;
-        this.currentWave = 0;
-        this.cards = "new ArrayList<String>();";
-        this.cardArrangement = "";
+    public Game(User user){
+        this.user = user;   
+        this.stage = 0;
+        this.killed = "{}";
     }
 }

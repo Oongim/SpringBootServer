@@ -75,6 +75,7 @@ public class TokenProvider implements InitializingBean{
                         .parseClaimsJws(token)
                         .getBody();
 
+        System.out.println("Authentication: "+token +", " + claims);
         Collection<? extends GrantedAuthority> authorities = 
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)

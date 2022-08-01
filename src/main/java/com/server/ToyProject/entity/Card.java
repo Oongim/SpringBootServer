@@ -3,6 +3,7 @@ package com.server.ToyProject.entity;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,11 +12,16 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.server.ToyProject.converter.StringListConverter;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @Entity
-public class WaveData {
+@AllArgsConstructor
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -25,11 +31,14 @@ public class WaveData {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    private Stage stage;
+    private Game stage;
 
-    private Integer wave;
-    
-    private Integer numOfKills;
+    @Column(columnDefinition = "json")
+    @JsonRawValue
+    private String cards;
 
-    private Boolean isKillBoss;
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "json")
+    private String cardArrangement;
+
 }

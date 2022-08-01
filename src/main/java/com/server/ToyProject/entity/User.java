@@ -1,21 +1,19 @@
 package com.server.ToyProject.entity;
 
 import java.util.Date;
-import java.util.UUID;
+import java.util.Set;
+//import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name="user")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity{
     @Id
     @Column(name="id")
@@ -32,9 +30,19 @@ public class User extends BaseEntity{
     @Setter
     private Date lastLoginAt;
 
-    public User(){
-        this.uuid = UUID.randomUUID().toString();
-    }
+    @Column(name = "activated")
+    private boolean activated;
+
+    @ManyToMany
+    @JoinTable(
+       name = "user_authority",
+       joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")},
+       inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities;
+
+    // public User(){
+    //     this.uuid = UUID.randomUUID().toString();
+    // }
 
     public User(String uuid, String email){
         this.uuid = uuid;

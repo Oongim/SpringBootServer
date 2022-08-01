@@ -1,4 +1,4 @@
-package com.server.ToyProject.dto.Token;
+package com.server.ToyProject.dto.Authority;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
