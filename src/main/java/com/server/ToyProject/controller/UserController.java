@@ -37,15 +37,14 @@ public class UserController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public @ResponseBody Iterable<User> getAllUsers() {
-        System.out.println("pass");
         return userService.findAll();
     }
 
     @GetMapping()
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public @ResponseBody User getMyUserInfo() {
-        System.out.println("pass getMyUserInfo");
         return userService.getMyUserWithAuthorities();
     }
 }

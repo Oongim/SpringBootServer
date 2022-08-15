@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.server.ToyProject.entity.User;
+import com.server.ToyProject.repository.UserRepository;
 
 @Component
 public class TokenProvider implements InitializingBean{
@@ -29,6 +31,9 @@ public class TokenProvider implements InitializingBean{
 
     private final String secret;
     private final long tokenValidityInMilliseconds;
+
+    @Autowired
+    private UserRepository userRepository;
 
     //private static final String BEARER_TYPE = "bearer";
     //private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
@@ -75,13 +80,11 @@ public class TokenProvider implements InitializingBean{
                         .parseClaimsJws(token)
                         .getBody();
 
-        System.out.println("Authentication: "+token +", " + claims);
-        Collection<? extends GrantedAuthority> authorities = 
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                        Collection<? extends GrantedAuthority> authorities = 
+                        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-
-        User principal = new User();
+        User principal = userRepository.findByEmail(claims.getSubject());
 
         return new UsernamePasswordAuthenticationToken(principal,token, authorities);
                 

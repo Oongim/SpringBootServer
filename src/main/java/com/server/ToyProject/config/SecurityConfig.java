@@ -18,7 +18,7 @@ import com.server.ToyProject.jwt.TokenProvider;
 
 
 @EnableWebSecurity //Web 보안을 활성화 하겠다
-// @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{ //추가적인 설정을 위한 상속
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

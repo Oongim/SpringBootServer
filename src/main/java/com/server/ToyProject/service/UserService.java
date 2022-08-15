@@ -61,15 +61,12 @@ public class UserService {
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public LoginUserDto getUserWithAuthorities(String email) {
-        System.out.println("pass LoginUserDto");
         return LoginUserDto.from(userRepository.findOneWithAuthoritiesByEmail(email).orElse(null));
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public User getMyUserWithAuthorities() {
-        
         User user = SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByEmail).orElse(null);
-        System.out.println("pass User: "+ user);
         return user;
     }
 }
